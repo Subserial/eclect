@@ -1,6 +1,10 @@
-use clap::{Arg, ArgMatches, Command, CommandFactory, Error, FromArgMatches, Parser};
+use clap::{Arg, ArgGroup, ArgMatches, Command, CommandFactory, Error, FromArgMatches, Parser};
 use std::fmt::Debug;
 use std::fs;
+
+pub fn exclusive_group(id: &'static str) -> ArgGroup {
+    ArgGroup::new(id).required(true).multiple(false)
+}
 
 #[derive(Debug)]
 pub struct Config<T> {

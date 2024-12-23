@@ -1,6 +1,7 @@
 use base64::Engine;
 use prost_lastfm::error::LastFMError;
 use prost_lastfm::{AuthService, LastFmService, LastFmServiceAgent, track, user};
+use url::Url;
 
 pub const PROD_ENDPOINT: &str = "https://ws.audioscrobbler.com/2.0/";
 pub const AUTH_ENDPOINT: &str = "https://last.fm/api/auth/";
@@ -72,8 +73,8 @@ fn generate_auth_request(
     Ok(auth_token)
 }
 
-pub fn build_auth_request(api_key: &str, auth_token: &str) -> url::Url {
-    let mut base = url::Url::parse(AUTH_ENDPOINT).unwrap();
+pub fn build_auth_request(api_key: &str, auth_token: &str) -> Url {
+    let mut base = Url::parse(AUTH_ENDPOINT).unwrap();
     base.query_pairs_mut()
         .append_pair("api_key", api_key)
         .append_pair("token", auth_token);

@@ -176,18 +176,29 @@ impl<'s> serde::Serializer for FlatSerializer {
     }
 }
 
-/*
 macro_rules! err_serialize {
-    ($fn:ident, $ty:ty, $($args)) => {
-        fn $fn(self, v: $ty) -> Result<Self::Ok, Self::Error> {
+    ($fn:ident) => {
+        fn $fn(self) -> Result<Self::Ok, Self::Error> {
+            Err(InvalidStructError(format!("cannot serialize pairs from None or unit")))
+        }
+    };
+    ($fn:ident, $ty:ty) => {
+        fn $fn(self, _v: $ty) -> Result<Self::Ok, Self::Error> {
             Err(InvalidStructError(format!(
                 "cannot serialize pairs from {}",
                 stringify!($ty)
             )))
         }
     };
+    ($fn:ident, $complex:expr, $($args:expr),+) => {
+        fn $fn(self, $($args),+) -> Result<Self::Ok, Self::Error> {
+            Err(InvalidStructError(format!(
+                "cannot serialize pairs from {}",
+                stringify!($complex)
+            )))
+        }
+    };
 }
-*/
 
 struct KeyValueSerializer;
 
@@ -202,113 +213,29 @@ impl serde::Serializer for KeyValueSerializer {
     type SerializeStruct = KeyValueDataSerializer;
     type SerializeStructVariant = Impossible<Self::Ok, Self::Error>;
 
-    fn serialize_bool(self, _v: bool) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from bool".to_string(),
-        ))
-    }
-
-    fn serialize_i8(self, _v: i8) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from i8".to_string(),
-        ))
-    }
-
-    fn serialize_i16(self, _v: i16) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from i16".to_string(),
-        ))
-    }
-
-    fn serialize_i32(self, _v: i32) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from i32".to_string(),
-        ))
-    }
-
-    fn serialize_i64(self, _v: i64) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from i64".to_string(),
-        ))
-    }
-
-    fn serialize_u8(self, _v: u8) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from u8".to_string(),
-        ))
-    }
-
-    fn serialize_u16(self, _v: u16) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from u16".to_string(),
-        ))
-    }
-
-    fn serialize_u32(self, _v: u32) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from u32".to_string(),
-        ))
-    }
-
-    fn serialize_u64(self, _v: u64) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from u64".to_string(),
-        ))
-    }
-
-    fn serialize_f32(self, _v: f32) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from f32".to_string(),
-        ))
-    }
-
-    fn serialize_f64(self, _v: f64) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from f64".to_string(),
-        ))
-    }
-
-    fn serialize_char(self, _v: char) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from char".to_string(),
-        ))
-    }
-
-    fn serialize_str(self, _v: &str) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from str".to_string(),
-        ))
-    }
-
-    fn serialize_bytes(self, _v: &[u8]) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from bytes".to_string(),
-        ))
-    }
-
-    fn serialize_none(self) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from None".to_string(),
-        ))
-    }
+    err_serialize!(serialize_bool, bool);
+    err_serialize!(serialize_i8, i8);
+    err_serialize!(serialize_i16, i16);
+    err_serialize!(serialize_i32, i32);
+    err_serialize!(serialize_i64, i64);
+    err_serialize!(serialize_u8, u8);
+    err_serialize!(serialize_u16, u16);
+    err_serialize!(serialize_u32, u32);
+    err_serialize!(serialize_u64, u64);
+    err_serialize!(serialize_f32, f32);
+    err_serialize!(serialize_f64, f64);
+    err_serialize!(serialize_char, char);
+    err_serialize!(serialize_str, &str);
+    err_serialize!(serialize_bytes, &[u8]);
+    err_serialize!(serialize_none);
+    err_serialize!(serialize_unit);
+    err_serialize!(serialize_unit_struct, &'static str);
 
     fn serialize_some<T>(self, value: &T) -> Result<Self::Ok, Self::Error>
     where
         T: ?Sized + Serialize,
     {
         value.serialize(self)
-    }
-
-    fn serialize_unit(self) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from unit".to_string(),
-        ))
-    }
-
-    fn serialize_unit_struct(self, _name: &'static str) -> Result<Self::Ok, Self::Error> {
-        Err(InvalidStructError(
-            "cannot serialize pairs from unit struct".to_string(),
-        ))
     }
 
     fn serialize_unit_variant(

@@ -233,6 +233,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "eclect"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "clap",
+ "discord-rich-presence",
+ "http",
+ "into_enum",
+ "prost-lastfm",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "toml",
+ "url",
+]
+
+[[package]]
 name = "either"
 version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1235,23 +1252,6 @@ dependencies = [
  "prost-build",
  "quote",
  "syn 2.0.91",
-]
-
-[[package]]
-name = "site-2"
-version = "0.1.0"
-dependencies = [
- "base64",
- "clap",
- "discord-rich-presence",
- "http",
- "into_enum",
- "prost-lastfm",
- "reqwest",
- "serde",
- "serde_json",
- "toml",
- "url",
 ]
 
 [[package]]

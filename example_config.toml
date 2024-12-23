@@ -1,0 +1,5 @@
+workdir = "data"
+query_interval = 15
+discord_app_id_file = "secrets/discord_app_id.txt"
+lastfm_api_key_file = "secrets/last_fm_api_key.txt"
+lastfm_secret_file = "secrets/last_fm_shared_secret.txt"

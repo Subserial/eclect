@@ -1,7 +1,7 @@
 cargo-features = ["edition2024"]
 
 [package]
-name = "site-2"
+name = "eclect"
 version = "0.1.0"
 edition = "2024"
 
