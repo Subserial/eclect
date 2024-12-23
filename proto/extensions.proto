@@ -1,0 +1,21 @@
+syntax = "proto3";
+import "google/protobuf/descriptor.proto";
+
+package lastfm.extensions;
+
+enum LastFMIdent {
+  IDENT_UNKNOWN = 0;
+  // Requests require an API key.
+  IDENT_STANDARD = 1;
+  // Requests require an API key and a signature.
+  IDENT_SIGNATURE_ONLY = 2;
+  // Requests require a session token, an API key and a signature.
+  IDENT_SESSION_TOKEN = 3;
+  // Requests require an API key. A session key may be provided to identify the user.
+  IDENT_SESSION_OPTIONAL = 4;
+}
+
+extend google.protobuf.MethodOptions {
+  optional LastFMIdent ident = 50001;
+  optional string method_name = 50002;
+}

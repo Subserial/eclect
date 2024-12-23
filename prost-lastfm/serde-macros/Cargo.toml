@@ -1,0 +1,13 @@
+cargo-features = ["edition2024"]
+
+[package]
+name = "serde-macros"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+quote = { version = "1.0.37" }
+syn = { version = "2.0.91" }
+
+[lib]
+proc-macro = true

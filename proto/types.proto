@@ -1,0 +1,80 @@
+syntax = "proto3";
+
+package lastfm;
+
+message Album {
+  string mbid = 1;
+  string text = 2 [ json_name = "#text" ];
+}
+
+message Artist {
+  string mbid = 1;
+  string text = 2 [ json_name = "#text" ];
+}
+
+message Date {
+  uint64 uts = 1;
+  string test = 2 [ json_name = "#text" ];
+}
+
+message ListAttributes {
+  string user = 1;
+  uint32 total_pages = 2 [ json_name = "totalPages" ];
+  uint32 page = 3;
+  uint32 per_page = 4 [ json_name = "perPage" ];
+  uint32 total = 5;
+}
+
+message Image {
+  string size = 1;
+  string text = 2 [ json_name = "#text" ];
+}
+
+message RecentTracks {
+  ListAttributes attr = 1 [ json_name = "@attr" ];
+  repeated Track track = 2;
+}
+
+message Session {
+  string name = 1;
+  string key = 2;
+  uint32 subscriber = 3;
+}
+
+message User {
+  string name = 1;
+  string url = 2;
+  string country = 3;
+  uint32 playlists = 4;
+  repeated Image image = 5;
+  UnixTime registered = 6;
+  string realname = 7;
+  string type = 8;
+  bool subscriber = 9;
+  optional uint32 age = 10;
+  optional string gender = 11;
+  optional uint32 playcount = 12;
+  optional uint32 artist_count = 13;
+  optional uint32 track_count = 14;
+  optional uint32 album_count = 15;
+  optional bool bootstrap = 16;
+}
+
+message Track {
+  message Attributes {
+    optional bool nowplaying = 1;
+  }
+  Attributes attr = 1 [ json_name = "@attr" ];
+  string name = 2;
+  Album album = 3;
+  Artist artist = 4;
+  string url = 5;
+  repeated Image image = 6;
+  string mbid = 7;
+  bool streamable = 8;
+}
+
+message UnixTime {
+  string unixtime = 1;
+  uint64 text = 2 [ json_name = "#text" ];
+}

@@ -1,0 +1,30 @@
+cargo-features = ["edition2024"]
+
+[package]
+name = "prost-lastfm"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+md5 = { version = "0.7.0" }
+into_enum = { version = "0.1.0" }
+prost = { path = "../prost" }
+reqwest = {  version = "0.12.9", default-features = false, features = ["json"] }
+serde = { version = "1.0.216", features = ["derive"] }
+serde-macros = { path = "serde-macros" }
+url = { version = "2.5.4" }
+
+[build-dependencies]
+extensions = { path = "extensions" }
+prost = { path = "../prost" }
+prost-build = { path = "../prost/prost-build" }
+service-generator = { path = "service-generator" }
+
+[dev-dependencies]
+serde_json = { version = "1.0.134" }
+
+[features]
+default = ["gen_sync"]
+gen_sync = ["reqwest/blocking"]
+gen_async = []
+async_default = []

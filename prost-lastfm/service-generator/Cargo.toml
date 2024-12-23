@@ -1,0 +1,16 @@
+cargo-features = ["edition2024"]
+
+[package]
+name = "service-generator"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+convert_case = { version = "0.6.0" }
+extensions = { path = "../extensions" }
+prettyplease = { version = "0.2.25" }
+prost = { path = "../../prost" }
+prost-build = { path = "../../prost/prost-build" }
+proc-macro2 = { version = "1.0.92" }
+quote = { version = "1.0.37" }
+syn = { version = "2.0.91" }

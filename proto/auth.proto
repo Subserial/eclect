@@ -1,0 +1,18 @@
+syntax = "proto3";
+import "types.proto";
+
+package lastfm.auth;
+
+message GetSessionRequest {
+  string token = 1;
+}
+
+message GetSessionResponse {
+  Session session = 1;
+}
+
+message GetTokenRequest {}
+
+message GetTokenResponse {
+  string token = 1;
+}

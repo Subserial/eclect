@@ -1,0 +1,37 @@
+syntax = "proto3";
+import "types.proto";
+
+package lastfm.user;
+
+message GetInfoRequest {
+  optional string user = 1;
+}
+
+message GetInfoResponse {
+  User user = 1;
+}
+
+message GetFriendsRequest {
+  optional string user = 1;
+  optional bool recenttracks = 2;
+  optional uint32 limit = 3;
+  optional uint32 page = 4;
+}
+
+message GetFriendsResponse {
+  ListAttributes attr = 1 [ json_name = "@attr" ];
+  repeated User user = 2;
+}
+
+message GetRecentTracksRequest {
+  optional uint32 limit = 1;
+  optional string user = 2;
+  optional uint32 page = 3;
+  optional uint64 from = 4;
+  optional bool extended = 5;
+  optional uint64 to = 6;
+}
+
+message GetRecentTracksResponse {
+  RecentTracks recenttracks = 1;
+}

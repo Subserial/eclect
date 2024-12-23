@@ -1,0 +1,4 @@
+[submodule "prost"]
+	path = prost
+	url = https://github.com/Subserial/prost
+	branch = extensions

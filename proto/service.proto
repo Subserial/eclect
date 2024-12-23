@@ -1,0 +1,34 @@
+syntax = "proto3";
+import "auth.proto";
+import "extensions.proto";
+import "user.proto";
+
+import "google/protobuf/descriptor.proto";
+
+package lastfm;
+
+service AuthService {
+  rpc AuthGetSession(auth.GetSessionRequest) returns (auth.GetSessionResponse) {
+    option (lastfm.extensions.ident) = IDENT_SIGNATURE_ONLY;
+    option (lastfm.extensions.method_name) = "auth.getSession";
+  }
+  rpc AuthGetToken(auth.GetTokenRequest) returns (auth.GetTokenResponse) {
+    option (lastfm.extensions.ident) = IDENT_SIGNATURE_ONLY;
+    option (lastfm.extensions.method_name) = "auth.getToken";
+  }
+}
+
+service LastFMService {
+  rpc UserGetInfo(user.GetInfoRequest) returns (user.GetInfoResponse) {
+    option (lastfm.extensions.ident) = IDENT_SESSION_OPTIONAL;
+    option (lastfm.extensions.method_name) = "user.getInfo";
+  }
+  rpc UserGetFriends(user.GetFriendsRequest) returns (user.GetFriendsResponse) {
+    option (lastfm.extensions.ident) = IDENT_SESSION_OPTIONAL;
+    option (lastfm.extensions.method_name) = "user.getFriends";
+  }
+  rpc UserGetRecentTracks(user.GetRecentTracksRequest) returns (user.GetRecentTracksResponse) {
+    option (lastfm.extensions.ident) = IDENT_SESSION_OPTIONAL;
+    option (lastfm.extensions.method_name) = "user.getRecentTracks";
+  }
+}
