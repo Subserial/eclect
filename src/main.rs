@@ -2,50 +2,48 @@ mod config;
 mod discord;
 mod lastfm;
 
-use clap::{Args, CommandFactory, Parser};
+use clap::Parser;
 use config::Config;
 use discord_rich_presence::DiscordIpc;
 use http::header::USER_AGENT;
 use std::time::Duration;
 
-#[derive(clap::Parser, serde::Deserialize)]
+#[derive(clap::Parser, serde::Deserialize, Debug)]
 #[clap(group(config::exclusive_group("discord_app_id_group")))]
 #[clap(group(config::exclusive_group("lastfm_api_key_group")))]
 #[clap(group(config::exclusive_group("lastfm_secret_group")))]
 struct ArgumentConfig {
     /// Persistent storage location (Last.fm session token)
-    #[clap(default_value = "~/.local/share/eclect/data")]
+    #[clap(long, default_value = "~/.local/share/eclect/data")]
     workdir: String,
     /// Seconds between querying Last.fm for now playing.
-    #[clap(default_value_t = 15)]
+    #[clap(long, default_value_t = 15)]
     query_interval: u64,
     /// The Discord app ID to use.
-    #[clap(group = "discord_app_id_group")]
+    #[clap(long, group = "discord_app_id_group")]
     discord_app_id: Option<String>,
     /// A file containing the Discord app ID to use.
-    #[clap(group = "discord_app_id_group")]
+    #[clap(long, group = "discord_app_id_group")]
     discord_app_id_file: Option<String>,
     /// The Last.fm API key to use.
-    #[clap(group = "lastfm_api_key_group")]
+    #[clap(long, group = "lastfm_api_key_group")]
     lastfm_api_key: Option<String>,
     /// A file containing the Last.fm API key to use.
-    #[clap(group = "lastfm_api_key_group")]
+    #[clap(long, group = "lastfm_api_key_group")]
     lastfm_api_key_file: Option<String>,
     /// The Last.fm API secret to use.
-    #[clap(group = "lastfm_secret_group")]
+    #[clap(long, group = "lastfm_secret_group")]
     lastfm_secret: Option<String>,
     /// A file containing the Last.fm API secret to use.
-    #[clap(group = "lastfm_secret_group")]
+    #[clap(long, group = "lastfm_secret_group")]
     lastfm_secret_file: Option<String>,
 }
 
 fn file_or_string(path: Option<String>, arg: Option<String>) -> Result<String, std::io::Error> {
-    if let Some(path) = path {
-        Ok(std::fs::read_to_string(path)?)
-    } else if let Some(arg) = arg {
-        Ok(arg.to_string())
-    } else {
-        unreachable!()
+    match (path, arg) {
+        (Some(path), _) => Ok(std::fs::read_to_string(path)?),
+        (_, Some(arg)) => Ok(arg),
+        _ => unreachable!(),
     }
 }
 

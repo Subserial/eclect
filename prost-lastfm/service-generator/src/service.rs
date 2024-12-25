@@ -101,11 +101,27 @@ pub fn reqwest_agent_impl(method: &prost_build::Method, write_async: bool) -> To
             )
             .struct_params(#base_arg).expect(#expect_msg)
             .to_url(self.secret.as_bytes(), &self.endpoint, #append_signature);
-            let resp = self.client.#req_method(url).send()
+            #[cfg(debug_assertions)]
+            let resp = {
+                let bytes = self.client.#req_method(url).send()
+                #token_await?
+                .bytes()
+                #token_await?;
+                println!("Data: {:?}", bytes);
+                serde_json::from_slice::<crate::api::Response<#base_out_ty>>(&bytes)
+                .map_err(|err| crate::error::LastFMError {
+                    message: err.to_string(),
+                    error: crate::error::ErrorCode::InvalidFormat,
+                })?.to_result()?
+            };
+            #[cfg(not(debug_assertions))]
+            let resp = {
+                self.client.#req_method(url).send()
                 #token_await?
                 .json::<crate::api::Response<#base_out_ty>>()
                 #token_await?
-                .to_result()?;
+                .to_result()?
+            };
             Ok(resp)
         }
     }

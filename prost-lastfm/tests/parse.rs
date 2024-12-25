@@ -1,4 +1,14 @@
-use prost_lastfm::user;
+use prost_lastfm::{auth, user};
+
+const GET_SESSION_RAW: &[u8] = br##"
+{
+    "session": {
+        "name": "TestUser",
+        "key": "1234567890ABCDEF",
+        "subscriber": 0
+    }
+}
+"##;
 
 const GET_INFO_RAW: &[u8] = br##"
 {
@@ -131,14 +141,38 @@ const GET_RECENT_TRACKS_RAW: &[u8] = br##"
 "##;
 
 #[test]
-fn parse() -> Result<(), String> {
+fn parse_positive() -> Result<(), String> {
+    match serde_json::from_slice::<auth::GetSessionResponse>(GET_SESSION_RAW) {
+        Err(err) => return Err(format!("GetSessionResponse error: {}", err)),
+        Ok(resp) => {
+            println!("{:?}", resp);
+        }
+    }
     match serde_json::from_slice::<user::GetInfoResponse>(GET_INFO_RAW) {
-        Err(err) => return Err(err.to_string()),
+        Err(err) => return Err(format!("GetInfoResponse error: {}", err)),
         Ok(resp) => {
             println!("{:?}", resp);
         }
     }
     match serde_json::from_slice::<user::GetRecentTracksResponse>(GET_RECENT_TRACKS_RAW) {
+        Err(err) => return Err(format!("GetRecentTracksResponse error: {}", err)),
+        Ok(resp) => {
+            println!("{:?}", resp);
+        }
+    }
+    Ok(())
+}
+
+const ERROR_RAW: &[u8] = br##"
+{
+    "message": "Unauthorized Token - This token has not been issued",
+    "error": 4
+}
+"##;
+
+#[test]
+fn parse_negative() -> Result<(), String> {
+    match serde_json::from_slice::<prost_lastfm::error::LastFMError>(ERROR_RAW) {
         Err(err) => return Err(err.to_string()),
         Ok(resp) => {
             println!("{:?}", resp);

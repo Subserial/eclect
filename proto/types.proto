@@ -38,7 +38,7 @@ message RecentTracks {
 message Session {
   string name = 1;
   string key = 2;
-  uint32 subscriber = 3;
+  uint64 subscriber = 3;
 }
 
 message User {

@@ -5,8 +5,8 @@ use std::collections::HashMap;
 #[derive(serde::Deserialize)]
 #[serde(untagged)]
 pub enum Response<T> {
+    LastFMError(LastFMError), // attempt error first
     Valid(T),
-    LastFMError(LastFMError),
 }
 
 impl<T> Response<T> {
@@ -33,6 +33,7 @@ impl ApiCall {
         Self { params }
     }
 
+    #[allow(dead_code)]
     pub fn params<'a>(self, pairs: impl Iterator<Item = (&'a str, &'a str)>) -> Self {
         let mut params = self.params;
         params.extend(pairs.map(|(key, value)| (key.to_string(), value.to_string())));
@@ -76,6 +77,8 @@ impl ApiCall {
             }
             query.append_pair("format", "json");
         }
+        #[cfg(debug_assertions)]
+        println!("URL: {}", base);
         base
     }
 }

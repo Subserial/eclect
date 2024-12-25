@@ -28,6 +28,7 @@ fn main() -> Result<(), String> {
         .type_attribute(".", "#[serde_macros::default_deserialize_with(::core::option::Option<bool> => crate::shim::parse_option_bool)]")
         .type_attribute(".", "#[derive(::serde::Deserialize, ::serde::Serialize)]")
         .type_attribute("lastfm.ListAttributes", "#[serde(rename_all = \"camelCase\")]")
+        .type_attribute("lastfm.error.Error.Error", "#[serde(untagged)]")
         .extension_registry(registry)
         .service_generator(Box::new(service_generator::ServiceGeneratorMacroWrapper(
             service_generator::LastFMRPCGenerator { async_setting },

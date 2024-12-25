@@ -99,7 +99,7 @@ pub fn activate_session(
         client.clone(),
         api_key.to_string(),
         secret.to_string(),
-        AUTH_ENDPOINT.to_string(),
+        PROD_ENDPOINT.to_string(),
     );
     if !token_path.exists() {
         let auth_token = generate_auth_request(&auth_agent, token_path)?;
@@ -122,7 +122,7 @@ pub fn activate_session(
                     return Err(InitError::ReqwestError(err));
                 }
                 Err(prost_lastfm::error::Error::LastFM(err)) => {
-                    eprintln!("error returned from requesting session token: {}", err);
+                    println!("Get Session error: {:?}", err);
                     let auth_token = match err.error {
                         prost_lastfm::error::ErrorCode::AuthenticationFailed => {
                             generate_auth_request(&auth_agent, token_path)?

@@ -10,7 +10,15 @@ use std::fmt::{Display, Formatter};
 #[derive(Debug, serde::Deserialize)]
 pub struct LastFMError {
     pub message: String,
+    #[serde(deserialize_with = "parse_code")]
     pub error: ErrorCode,
+}
+
+fn parse_code<'de, D>(deserializer: D) -> Result<ErrorCode, D::Error>
+where
+    D: serde::de::Deserializer<'de>,
+{
+    Ok(ErrorCode::from_i32(<i32 as serde::Deserialize>::deserialize(deserializer)?).unwrap_or(ErrorCode::Unknown))
 }
 
 impl Display for LastFMError {
