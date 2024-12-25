@@ -7,21 +7,31 @@ You must have Discord open on the same computer to use this application.
 ## How To Use
 
 ```
-Usage: eclect [OPTIONS] <DISCORD_APP_ID|DISCORD_APP_ID_FILE> <LASTFM_API_KEY|LASTFM_API_KEY_FILE> <LASTFM_SECRET|LASTFM_SECRET_FILE> [WORKDIR] [QUERY_INTERVAL]
-
-Arguments:
-  [WORKDIR]              Persistent storage location (Last.fm session token) [default: ~/.local/share/eclect/data]
-  [QUERY_INTERVAL]       Seconds between querying Last.fm for now playing [default: 15]
-  [DISCORD_APP_ID]       The Discord app ID to use
-  [DISCORD_APP_ID_FILE]  A file containing the Discord app ID to use
-  [LASTFM_API_KEY]       The Last.fm API key to use
-  [LASTFM_API_KEY_FILE]  A file containing the Last.fm API key to use
-  [LASTFM_SECRET]        The Last.fm API secret to use
-  [LASTFM_SECRET_FILE]   A file containing the Last.fm API secret to use
+Usage: eclect [OPTIONS]
 
 Options:
-  -c <FILE>      Read flags from a TOML file. Exclusive to other arguments.
-  -h, --help     Print help
+  -w, --workdir <WORKDIR>
+          Persistent storage location (Last.fm session token) [default: /home/sb/.local/share/eclect]
+  -q, --query-interval <QUERY_INTERVAL>
+          Seconds between Last.fm queries for now playing [default: 15]
+      --discord-app-id <DISCORD_APP_ID>
+          The Discord app ID to use. Required unless --discord-app-id-file is specified
+      --discord-app-id-file <DISCORD_APP_ID_FILE>
+          A file containing the Discord app ID to use. Required unless --discord-app-id is specified
+      --lastfm-api-key <LASTFM_API_KEY>
+          The Last.fm API key to use. Required unless --lastfm--api-key-file is specified
+      --lastfm-api-key-file <LASTFM_API_KEY_FILE>
+          A file containing the Last.fm API key to use. Required unless --lastfm--api-key is specified
+      --lastfm-secret <LASTFM_SECRET>
+          The Last.fm API secret to use. Required unless --lastfm-secret-file is specified
+      --lastfm-secret-file <LASTFM_SECRET_FILE>
+          A file containing the Last.fm API secret to use. Required unless --lastfm-secret is specified
+  -c, --config-file <FILE>
+          Read flags from a TOML file. Exclusive to other arguments.
+  -h, --help
+          Print help (see a summary with '-h')
+  -V, --version
+          Print version
 ```
 
 The application requires 3 different tokens:

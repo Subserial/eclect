@@ -18,7 +18,10 @@ fn parse_code<'de, D>(deserializer: D) -> Result<ErrorCode, D::Error>
 where
     D: serde::de::Deserializer<'de>,
 {
-    Ok(ErrorCode::from_i32(<i32 as serde::Deserialize>::deserialize(deserializer)?).unwrap_or(ErrorCode::Unknown))
+    Ok(
+        ErrorCode::from_i32(<i32 as serde::Deserialize>::deserialize(deserializer)?)
+            .unwrap_or(ErrorCode::Unknown),
+    )
 }
 
 impl Display for LastFMError {
