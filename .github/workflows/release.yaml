@@ -1,31 +1,29 @@
-name: Release on Push
+name: Release
 on:
-  push:
-    branches: [ "main" ]
+  release:
+    types: [created]
 
-env:
-  CARGO_TERM_COLOR: always
 jobs:
-  build:
+  release:
+    name: Release ${{ matrix.target }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-pc-windows-gnu
+            archive: zip
+          - target: x86_64-unknown-linux-gnu
+            archive: tar.gz tar.xz
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Setup output dir
-        run: mkdir release-out
-      - name: Build Linux
-        run: rustup target add x86_64-unknown-linux-gnu && cargo build --release --target=x86_64-unknown-linux-gnu
-      - name: Move Linux
-        run: mv target/x86_64-unknown-linux-gnu/release/eclect release-out/eclect-linux-amd64
-      - name: Build Windows
-        run: rustup target add x86_64-pc-windows-gnu && cargo build --release --target=x86_64-pc-windows-gnu
-      - name: Move Windows
-        run: mv target/x86_64-pc-windows-gnu/release/eclect.exe release-out/eclect-windows.exe
-      - name: Read crate version
-        run: echo RELEASE_TAG=v$(cargo read-manifest | jq .version) >> "$GITHUB_ENV"
-      - uses: ncipollo/release-action@v1
+      - name: Compile and release
+        uses: rust-build/rust-build.action@v1.4.5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          artifacts: "release-out/*"
-          tag: ${{ env.RELEASE_TAG }}
-          generateReleaseNotes: "true"
+          RUSTTARGET: ${{ matrix.target }}
+          ARCHIVE_TYPES: ${{ matrix.archive }}
+          EXTRA_FILES: "README.md LICENSE-MIT-CMU"
