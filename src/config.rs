@@ -24,10 +24,6 @@ impl Display for ConfigError {
     }
 }
 
-pub fn exclusive_group(id: &'static str) -> ArgGroup {
-    ArgGroup::new(id).multiple(false).required(true)
-}
-
 #[derive(Debug)]
 pub struct Config<T> {
     pub config_path: Option<String>,
