@@ -16,6 +16,11 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             archive: tar.gz tar.xz
     steps:
+      - name: Set up MinGW
+        uses: egor-tensin/setup-mingw@v2.2.0
+        with:
+          version: 12.2.0
+          platform: x64
       - uses: actions/checkout@v4
         with:
           submodules: recursive
