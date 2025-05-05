@@ -19,7 +19,7 @@ jobs:
       - name: Set up MinGW
         uses: egor-tensin/setup-mingw@v2
         with:
-          platform: x64
+          platform: x86
       - uses: actions/checkout@v4
         with:
           submodules: recursive
