@@ -11,14 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set up MinGW
-      uses: egor-tensin/setup-mingw@v2
+      uses: msys2/setup-msys2@v2
       with:
-        platform: x64
+        msystem: mingw64
+        install: mingw-w64-x86_64-openssl
     - uses: actions/checkout@v4
       with:
         submodules: recursive
     - name: Build Windows
-      run: rustup target add x86_64-pc-windows-gnu && cargo build --verbose --target=x86_64-pc-windows-gnu
+      run: rustup target add x86_64-pc-windows-msvc && cargo build --verbose --target=x86_64-pc-windows-msvc
     - name: Build Linux
       run: rustup target add x86_64-unknown-linux-gnu && cargo build --verbose --target=x86_64-unknown-linux-gnu
     - name: Run tests on Linux
