@@ -11,9 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set up MinGW
-      uses: egor-tensin/setup-mingw@v2.2.0
+      uses: egor-tensin/setup-mingw@v2
       with:
-        version: 12.2.0
         platform: x64
     - uses: actions/checkout@v4
       with:
