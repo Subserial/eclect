@@ -11,10 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set up MinGW
-      uses: msys2/setup-msys2@v2
+      uses: egor-tensin/setup-mingw@v2
       with:
-        msystem: mingw64
-        install: mingw-w64-x86_64-openssl
+        platform: x64
     - uses: actions/checkout@v4
       with:
         submodules: recursive
