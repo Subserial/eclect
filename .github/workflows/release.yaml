@@ -5,29 +5,56 @@ on:
 
 jobs:
   release:
-    name: Release ${{ matrix.target }}
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - target: i686-pc-windows-gnu
-            archive: zip
-          - target: x86_64-unknown-linux-gnu
-            archive: tar.gz tar.xz
+        flow:
+          - base: Windows
+            uses-os: windows-latest
+            target: x86_64-pc-windows-gnu
+          - base: Linux
+            uses-os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+    name: Release ${{ matrix.flow.base }}
+    runs-on: ${{ matrix.flow.uses-os }}
+    permissions:
+      contents: write
     steps:
       - name: Set up MinGW
-        uses: egor-tensin/setup-mingw@v2
+        uses: msys2/setup-msys2@v2
         with:
-          platform: x86
+          msystem: mingw64
+          install: mingw-w64-x86_64-openssl
+        if: ${{ contains(matrix.flow.uses-os, 'windows') }}
+      - name: Install musl-tools
+        run: sudo apt-get update --yes && sudo apt-get install --yes musl-tools
+        if: ${{ contains(matrix.flow.uses-os, 'ubuntu') }}
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-      - name: Compile and release
-        uses: rust-build/rust-build.action@v1.4.5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build
+        run: |
+          rustup target add ${{ matrix.flow.target }}
+          cargo build --locked --release --verbose --target=${{ matrix.flow.target }}
+      - name: Run tests
+        run: cargo test --locked --release --verbose --target=${{ matrix.flow.target }}
+      - name: Compress artifacts (Windows)
+        run: |
+          cp target/${{ matrix.flow.target }}/release/eclect.exe eclect.exe
+          tar.exe -a -c -f eclect_${{ matrix.flow.target }}.zip eclect README.md LICENSE-MIT-CMU
+          echo -n eclect_${{ matrix.flow.target }}.zip > output_name.txt
+        if: ${{ contains(matrix.flow.uses-os, 'windows') }}
+      - name: Compress artifacts (Linux)
+        run: |
+          cp target/${{ matrix.flow.target }}/release/eclect eclect
+          tar -czf eclect_${{ matrix.flow.target }}.tar.gz eclect README.md LICENSE-MIT-CMU
+          echo -n eclect_${{ matrix.flow.target }}.tar.gz > output_name.txt
+        if: ${{ contains(matrix.flow.uses-os, 'ubuntu') }}
+      - name: Retrieve filename
+        id: filename
+        run: echo OUT=$(cat output_name.txt) >> $GITHUB_OUTPUT
+      - name: Upload ${{ matrix.flow.base }} Artifact
+        uses: actions/upload-artifact@v4
         with:
-          RUSTTARGET: ${{ matrix.target }}
-          ARCHIVE_TYPES: ${{ matrix.archive }}
-          EXTRA_FILES: "README.md LICENSE-MIT-CMU"
+          name: ${{ steps.filename.outputs.out }}
+          path: ${{ steps.filename.outputs.out }}

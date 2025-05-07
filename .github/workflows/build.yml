@@ -8,20 +8,34 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        flow:
+          - base: Windows
+            uses-os: windows-latest
+            target: x86_64-pc-windows-gnu
+          - base: Linux
+            uses-os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+    name: Release ${{ matrix.flow.base }}
+    runs-on: ${{ matrix.flow.uses-os }}
     steps:
-    - name: Install MinGW
-      uses: egor-tensin/setup-mingw@v2
-      with:
-        platform: x86
-    - name: Install musl-tools
-      run: sudo apt-get update --yes && sudo apt-get install --yes musl-tools
-    - uses: actions/checkout@v4
-      with:
-        submodules: recursive
-    - name: Build Windows
-      run: rustup target add i686-pc-windows-gnu && cargo build --verbose --target=x86_64-pc-windows-gnu
-    - name: Build Linux
-      run: rustup target add x86_64-unknown-linux-gnu && cargo build --verbose --target=x86_64-unknown-linux-gnu
-    - name: Run tests on Linux
-      run: cargo test --verbose --target=x86_64-unknown-linux-gnu
+      - name: Set up MinGW
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: mingw64
+          install: mingw-w64-x86_64-openssl
+        if: ${{ contains(matrix.flow.uses-os, 'windows') }}
+      - name: Install musl-tools
+        run: sudo apt-get update --yes && sudo apt-get install --yes musl-tools
+        if: ${{ contains(matrix.flow.uses-os, 'ubuntu') }}
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Build
+        run: |
+          rustup target add ${{ matrix.flow.target }}
+          cargo build --locked --release --verbose --target=${{ matrix.flow.target }}
+      - name: Run tests
+        run: cargo test --locked --release --verbose --target=${{ matrix.flow.target }}
