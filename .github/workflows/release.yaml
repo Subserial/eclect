@@ -54,7 +54,6 @@ jobs:
         id: filename
         run: echo OUT=$(cat output_name.txt) >> $GITHUB_OUTPUT
       - name: Upload ${{ matrix.flow.base }} Artifact
-        run: |
-          gh release upload --clobber ${{ github.ref_name }} ${{ steps.filename.outputs.out }}
-        with:
+        run: gh release upload --clobber ${{ github.ref_name }} ${{ steps.filename.outputs.out }}
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
