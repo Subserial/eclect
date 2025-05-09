@@ -41,7 +41,7 @@ jobs:
       - name: Compress artifacts (Windows)
         run: |
           cp target/${{ matrix.flow.target }}/release/eclect.exe eclect.exe
-          tar.exe -a -c -f eclect_${{ matrix.flow.target }}.zip eclect README.md LICENSE-MIT-CMU
+          7z a -t zip eclect_${{ matrix.flow.target }}.zip eclect README.md LICENSE-MIT-CMU
           echo -n eclect_${{ matrix.flow.target }}.zip > output_name.txt
         if: ${{ contains(matrix.flow.uses-os, 'windows') }}
       - name: Compress artifacts (Linux)
@@ -54,7 +54,7 @@ jobs:
         id: filename
         run: echo OUT=$(cat output_name.txt) >> $GITHUB_OUTPUT
       - name: Upload ${{ matrix.flow.base }} Artifact
-        uses: actions/upload-artifact@v4
+        run: |
+          gh release upload --clobber ${{ github.ref_name }} ${{ steps.filename.outputs.out }}
         with:
-          name: ${{ steps.filename.outputs.out }}
-          path: ${{ steps.filename.outputs.out }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
