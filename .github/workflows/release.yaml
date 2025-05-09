@@ -46,7 +46,7 @@ jobs:
         if: ${{ contains(matrix.flow.uses-os, 'windows') }}
       - name: Compress artifacts (Linux)
         run: |
-          cp target/${{ matrix.flow.target }}/release/eclect eclect
+          copy target/${{ matrix.flow.target }}/release/eclect eclect
           tar -czf eclect_${{ matrix.flow.target }}.tar.gz eclect README.md LICENSE-MIT-CMU
           echo -n eclect_${{ matrix.flow.target }}.tar.gz > output_name.txt
         if: ${{ contains(matrix.flow.uses-os, 'ubuntu') }}
