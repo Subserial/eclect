@@ -40,13 +40,13 @@ jobs:
         run: cargo test --locked --release --verbose --target=${{ matrix.flow.target }}
       - name: Compress artifacts (Windows)
         run: |
-          cp target/${{ matrix.flow.target }}/release/eclect.exe eclect.exe
+          copy target/${{ matrix.flow.target }}/release/eclect.exe eclect.exe
           7z a -t zip eclect_${{ matrix.flow.target }}.zip eclect README.md LICENSE-MIT-CMU
           echo -n eclect_${{ matrix.flow.target }}.zip > output_name.txt
         if: ${{ contains(matrix.flow.uses-os, 'windows') }}
       - name: Compress artifacts (Linux)
         run: |
-          copy target/${{ matrix.flow.target }}/release/eclect eclect
+          cp target/${{ matrix.flow.target }}/release/eclect eclect
           tar -czf eclect_${{ matrix.flow.target }}.tar.gz eclect README.md LICENSE-MIT-CMU
           echo -n eclect_${{ matrix.flow.target }}.tar.gz > output_name.txt
         if: ${{ contains(matrix.flow.uses-os, 'ubuntu') }}
